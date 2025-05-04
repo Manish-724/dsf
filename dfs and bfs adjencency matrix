@@ -1,0 +1,51 @@
+def bfs(graph, start, n):
+    visited = [False] * (n + 1)
+    queue = [start]
+    visited[start] = True
+
+    print("The BFS of the Graph is:")
+    while queue:
+        v = queue.pop(0)
+        print(v, end=" ")
+        for j in range(1, n + 1):
+            if graph[v][j] == 1 and not visited[j]:
+                queue.append(j)
+                visited[j] = True
+    print()
+
+def dfs(graph, start, n):
+    visited = [False] * (n + 1)
+    stack = [start]
+
+    print("The DFS of the Graph is:")
+    while stack:
+        v = stack.pop()
+        if not visited[v]:
+            print(v, end=" ")
+            visited[v] = True
+            for j in range(n, 0, -1):  # Reverse order to mimic recursive DFS
+                if graph[v][j] == 1 and not visited[j]:
+                    stack.append(j)
+    print()
+
+if __name__ == "__main__":
+    n = int(input("Enter number of vertices: "))
+    m = int(input("Enter number of edges: "))
+
+    graph = [[0] * (n + 1) for _ in range(n + 1)]
+
+    print("Enter edges (format: i j):")
+    for _ in range(m):
+        i, j = map(int, input().split())
+        graph[i][j] = 1
+        graph[j][i] = 1  # Since the graph is undirected
+
+    print("The adjacency matrix of the graph is:")
+    for row in graph[1:]:
+        print(" ".join(map(str, row[1:])))
+
+    start = int(input("Enter initial vertex for BFS: "))
+    bfs(graph, start, n)
+
+    start = int(input("Enter initial vertex for DFS: "))
+    dfs(graph, start, n)
