@@ -1,0 +1,145 @@
+
+
+class Node:
+    def __init__(self, word=None, mean=None):
+        self.word = word
+        self.mean = mean
+        self.left = None
+        self.right = None
+
+
+class Dict:
+    def __init__(self):
+        self.root = None
+
+    def asc(self, curr):
+        if curr:
+            self.asc(curr.left)
+            print(f"{curr.word} - {curr.mean}")
+            self.asc(curr.right)
+
+    def desc(self, root):
+        if root:
+            self.desc(root.right)
+            print(f"{root.word} - {root.mean}")
+            self.desc(root.left)
+
+    def inorder(self):
+        self.asc(self.root)
+
+    def postorder(self):
+        self.desc(self.root)
+
+    def insert(self, word, mean):
+        node = Node(word, mean)
+        if not self.root:
+            self.root = node
+            return True
+
+        curr = self.root
+        par = None
+        while curr:
+            if curr.word > word:
+                par = curr
+                curr = curr.left
+            elif curr.word < word:
+                par = curr
+                curr = curr.right
+            else:
+                print("Same words not allowed")
+                return False
+
+        if par.word > word:
+            par.left = node
+        else:
+            par.right = node
+
+        return True
+
+    def search(self, word, cnt):
+        curr = self.root
+        while curr:
+            if curr.word > word:
+                cnt += 1
+                curr = curr.left
+            elif curr.word < word:
+                cnt += 1
+                curr = curr.right
+            elif curr.word == word:
+                cnt += 1
+                break
+        return cnt
+
+    def searchS(self, word):
+        curr = self.root
+        while curr:
+            if curr.word > word:
+                curr = curr.left
+            elif curr.word < word:
+                curr = curr.right
+            elif curr.word == word:
+                break
+        return curr
+
+    def update(self, word):
+        nw = input(f"Enter new meaning of word {word} - ")
+        curr = self.searchS(word)
+        if curr:
+            curr.mean = nw
+        else:
+            print("Word not found.")
+
+
+def main():
+    d = Dict()
+    while True:
+        print("\n--Dictionary--")
+        print("1) Add word\n2) Display in Ascending\n3) Display in Descending\n4) Update\n5) Search\n6) Exit")
+        try:
+            ch = int(input("Enter your choice: "))
+        except ValueError:
+            print("Invalid input! Please enter a valid choice.")
+            continue
+
+        if ch == 1:
+            w = input("Enter the word: ")
+            m = input("Enter the meaning: ")
+            d.insert(w, m)
+
+        elif ch == 2:
+            print("Ascending order is:")
+            d.inorder()
+
+        elif ch == 3:
+            print("Descending order is:")
+            d.postorder()
+
+        elif ch == 4:
+            uw = input("Enter word you want to update: ")
+            d.update(uw)
+
+        elif ch == 5:
+            sw = input("Enter word you want to search: ")
+            cnt = 0
+            cnt = d.search(sw, cnt)
+            if cnt == 0:
+                print("Word not found")
+            else:
+                print(f"The comparisons required are: {cnt}")
+
+        elif ch == 6:
+            print("End")
+            break
+
+        else:
+            print("Invalid choice. Please try again.")
+
+
+if __name__ == "__main__":
+    main()
+
+
+
+
+
+
