@@ -1,0 +1,69 @@
+import sys
+
+class Graph:
+    def __init__(self, n):
+        self.num = n
+        self.AM = [[0] * n for _ in range(n)]  # Adjacency matrix
+        self.data = []
+
+        print("Enter names of all cities: ")
+        self.data = [input().strip() for _ in range(n)]
+
+        print("Enter cost if you want to connect cities, else enter 0:")
+        print("   " + "  ".join(self.data))
+
+        for i in range(n):
+            print(f"Costs from {self.data[i]}:")
+            for j in range(i):
+                print("   ", end="\t")  # spacing for symmetry
+            for j in range(i, n):
+                if i == j:
+                    print("0", end="\t")
+                    self.AM[i][j] = 0
+                else:
+                    cost = int(input(f"Cost to connect {self.data[i]} to {self.data[j]}: "))
+                    self.AM[i][j] = self.AM[j][i] = cost
+            print()
+
+        # Convert 0 (no connection) to infinity, except for diagonal
+        for i in range(n):
+            for j in range(n):
+                if self.AM[i][j] == 0 and i != j:
+                    self.AM[i][j] = sys.maxsize
+
+    def prims(self):
+        print("\nCities that we need to connect (Minimum Spanning Tree):")
+        visited = [0] * self.num
+        distance = [sys.maxsize] * self.num
+        from_vertex = [0] * self.num
+
+        visited[0] = 1
+        for i in range(self.num):
+            distance[i] = self.AM[0][i]
+
+        cost = 0
+        for _ in range(self.num - 1):
+            min_dist = sys.maxsize
+            v = -1
+
+            for j in range(self.num):
+                if not visited[j] and distance[j] < min_dist:
+                    v = j
+                    min_dist = distance[j]
+
+            u = from_vertex[v]
+            print(f"{self.data[u]} ==> {self.data[v]}\tcost: {self.AM[u][v]}")
+            visited[v] = 1
+            cost += self.AM[u][v]
+
+            for j in range(self.num):
+                if not visited[j] and self.AM[v][j] < distance[j]:
+                    distance[j] = self.AM[v][j]
+                    from_vertex[j] = v
+
+        print(f"\nTotal cost of connecting all cities: {cost}")
+
+if __name__ == "__main__":
+    n = int(input("Enter number of cities: "))
+    gr = Graph(n)
+    gr.prims()
