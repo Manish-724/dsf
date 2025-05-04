@@ -1,0 +1,79 @@
+# To implement a dictionary Abstract Data Type (ADT) using hashing with collision handling through chaining, we'll provide a Python example. This implementation includes the standard operations: insert, find, and delete for key-value pairs where keys are unique and comparable
+class HashTable:
+    def __init__(self):
+        self.size = 10
+        self.table = [{'key': -1, 'name': 'NULL'} for _ in range(self.size)]
+
+    def hash_function(self, key):
+        return key % self.size
+
+    def insert(self, key, name):
+        index = self.hash_function(key)
+        cnt = 0
+
+        while cnt < self.size:
+            if self.table[index]['key'] == -1:
+                self.table[index] = {'key': key, 'name': name}
+                return
+            elif self.hash_function(self.table[index]['key']) != index:
+                temp = self.table[index]
+                self.table[index] = {'key': key, 'name': name}
+                key, name = temp['key'], temp['name']
+            index = (index + 1) % self.size
+            cnt += 1
+
+        print("\n\tHash Table is FULL")
+
+    def find(self, key):
+        for i in range(self.size):
+            if self.table[i]['key'] == key:
+                print(f"\n\t{key} is Found at {i} Location With Name {self.table[i]['name']}")
+                return i
+        print("\n\tKey Not Found")
+        return -1
+
+    def delete(self, key):
+        index = self.find(key)
+        if index != -1:
+            self.table[index] = {'key': -1, 'name': 'NULL'}
+            print("\n\tKey is Deleted")
+
+    def display(self):
+        print("\n\t\tKey\t\tName")
+        for i in range(self.size):
+            print(f"\th[{i}]\t{self.table[i]['key']}\t\t{self.table[i]['name']}")
+
+def main():
+    obj = HashTable()
+    while True:
+        print("\n\t*** Telephone (ADT) *****")
+        print("\t1. Insert\n\t2. Display\n\t3. Find\n\t4. Delete\n\t5. Exit")
+        ch = int(input("\t..... Enter Your Choice: "))
+
+        if ch == 1:
+            while True:
+                key = int(input("\n\tEnter a Telephone No: "))
+                name = input("\n\tEnter a Client Name: ")
+                obj.insert(key, name)
+                ans = input("\n\t..... Do You Want to Insert More Key: y/n ")
+                if ans.lower() != 'y':
+                    break
+        elif ch == 2:
+            obj.display()
+        elif ch == 3:
+            key = int(input("\n\tEnter a Key Which You Want to Search: "))
+            obj.find(key)
+        elif ch == 4:
+            key = int(input("\n\tEnter a Key Which You Want to Delete: "))
+            obj.delete(key)
+        elif ch == 5:
+            break
+        else:
+            print("\n\tInvalid Choice")
+
+        ans = input("\n\t..... Do You Want to Continue in Main Menu: y/n ")
+        if ans.lower() != 'y':
+            break
+
+if __name__ == "__main__":
+    main()
