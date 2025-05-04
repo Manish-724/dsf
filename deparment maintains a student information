@@ -1,0 +1,118 @@
+
+import pickle
+import os
+
+class Student:
+    def __init__(self):
+        self.roll_no = 0
+        self.name = ""
+        self.address = ""
+        self.division = ""
+
+    # Function to get student data
+    def get_data(self):
+        self.name = input("Enter your name: ")
+        self.roll_no = int(input("Enter your Roll No.: "))
+        self.division = input("Enter your Division: ")
+        self.address = input("Enter your Address: ")
+
+    # Function to show student data
+    def show_data(self):
+        print(f"\nName: {self.name}")
+        print(f"Roll No.: {self.roll_no}")
+        print(f"Division: {self.division}")
+        print(f"Address: {self.address}")
+
+    # Function to get roll number
+    def get_roll(self):
+        return self.roll_no
+
+# Function to add student data to file
+def add():
+    with open("student.dat", "ab") as file:
+        student = Student()
+        student.get_data()
+        pickle.dump(student, file)
+
+# Function to display all student records
+def display():
+    try:
+        with open("student.dat", "rb") as file:
+            while True:
+                student = pickle.load(file)
+                student.show_data()
+    except EOFError:
+        pass
+
+# Function to search a student record by roll number
+def search(roll_no):
+    found = False
+    try:
+        with open("student.dat", "rb") as file:
+            while True:
+                student = pickle.load(file)
+                if student.get_roll() == roll_no:
+                    student.show_data()
+                    found = True
+                    break
+    except EOFError:
+        if not found:
+            print("Record not found!")
+
+# Function to delete a student record by roll number
+def delete(roll_no):
+    found = False
+    students = []
+
+    try:
+        with open("student.dat", "rb") as file:
+            while True:
+                student = pickle.load(file)
+                if student.get_roll() != roll_no:
+                    students.append(student)
+                else:
+                    found = True
+    except EOFError:
+        if found:
+            with open("student.dat", "wb") as file:
+                for student in students:
+                    pickle.dump(student, file)
+            print("\nRecord Deleted")
+        else:
+            print("Record not found!")
+
+def main():
+    while True:
+        print("\nFile Handling")
+        print("1) Add")
+        print("2) Display")
+        print("3) Search")
+        print("4) Delete")
+        print("5) Quit")
+        
+        choice = int(input("\nEnter your choice: "))
+        
+        if choice == 1:
+            add()
+        elif choice == 2:
+            print("List of records:")
+            display()
+        elif choice == 3:
+            roll_no = int(input("Enter Student Roll No: "))
+            search(roll_no)
+        elif choice == 4:
+            roll_no = int(input("Enter Roll No to be deleted: "))
+            delete(roll_no)
+        elif choice == 5:
+            print("End")
+            break
+        else:
+            print("Invalid choice. Please try again.")
+
+if __name__ == "__main__":
+    main()
+
+
+
+
+
