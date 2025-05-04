@@ -1,0 +1,49 @@
+class Node:
+    def __init__(self, data):
+        self.data = data
+        self.left = None
+        self.right = None
+
+def create_node(data):
+    return Node(data)
+
+def is_operator(c):
+    return c in {'+', '-', '*', '/'}
+
+def construct_tree_from_prefix(expression):
+    stack = []
+    # Traverse from right to left for prefix
+    for i in range(len(expression) - 1, -1, -1):
+        if not is_operator(expression[i]):
+            stack.append(create_node(expression[i]))
+        else:
+            temp = create_node(expression[i])
+            temp.left = stack.pop()
+            temp.right = stack.pop()
+            stack.append(temp)
+    return stack[-1]
+
+def postorder_traversal(root):
+    if root is None:
+        return
+
+    stack1 = [root]
+    stack2 = []
+
+    while stack1:
+        node = stack1.pop()
+        stack2.append(node)
+        if node.left:
+            stack1.append(node.left)
+        if node.right:
+            stack1.append(node.right)
+
+    while stack2:
+        print(stack2.pop().data, end=" ")
+
+if __name__ == "__main__":
+    expression = input("Enter the prefix expression (e.g., *+AB-CD): ")
+    root = construct_tree_from_prefix(expression)
+    print("Postorder traversal:", end=" ")
+    postorder_traversal(root)
+    print()
