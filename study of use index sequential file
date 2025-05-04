@@ -1,0 +1,118 @@
+MAX = 20  # Define maximum size
+
+# Define Employee class
+class Employee:
+    def __init__(self, name="", code=0, designation="", exp=0, age=0, salary=0):
+        self.name = name
+        self.code = code
+        self.designation = designation
+        self.exp = exp
+        self.age = age
+        self.salary = salary
+
+# Global variables
+num = 0
+emp = [Employee() for _ in range(MAX)]  # List of Employee objects
+
+# Function to show menu
+def show_menu():
+    running = True
+    while running:
+        print("\nUniversity Employee Management System")
+        print("Available Options:")
+        print("1) Build Table")
+        print("2) Insert New Entry")
+        print("3) Delete Entry")
+        print("4) Search a Record")
+        print("5) Exit")
+
+        try:
+            option = int(input("Enter your choice: "))
+        except ValueError:
+            print("Invalid input. Please enter a number between 1 and 5.")
+            continue
+
+        if option == 1:
+            build()
+        elif option == 2:
+            insert()
+        elif option == 3:
+            delete_record()
+        elif option == 4:
+            search_record()
+        elif option == 5:
+            print("Exiting program.")
+            running = False
+        else:
+            print("Expected Options are 1/2/3/4/5")
+
+# Function to build the table
+def build():
+    global num
+    print("\nBuild The Table")
+    print(f"Maximum Entries can be: {MAX}")
+    num = int(input("Enter the number of Entries required: "))
+    if num > MAX:
+        print("Maximum number of Entries is 20. Reducing to 20.")
+        num = MAX
+
+    print("Enter the following data:")
+    for i in range(num):
+        emp[i].name = input(f"Name of Employee {i + 1}: ")
+        emp[i].code = int(input(f"Employee ID of Employee {i + 1}: "))
+        emp[i].designation = input(f"Designation of Employee {i + 1}: ")
+        emp[i].exp = int(input(f"Experience of Employee {i + 1}: "))
+        emp[i].age = int(input(f"Age of Employee {i + 1}: "))
+        emp[i].salary = int(input(f"Salary of Employee {i + 1}: "))
+
+# Function to insert a new employee
+def insert():
+    global num
+    if num < MAX:
+        i = num
+        num += 1
+        print("Enter the information of the Employee")
+        emp[i].name = input("Name: ")
+        emp[i].code = int(input("Employee ID: "))
+        emp[i].designation = input("Designation: ")
+        emp[i].exp = int(input("Experience: "))
+        emp[i].age = int(input("Age: "))
+        emp[i].salary = int(input("Salary: "))
+    else:
+        print("Employee Table Full")
+
+# Function to delete an employee by index
+def delete_index(i):
+    global num
+    for j in range(i, num - 1):
+        emp[j] = emp[j + 1]
+    num -= 1
+
+# Function to delete a record by employee code
+def delete_record():
+    code = int(input("Enter the Employee ID to Delete Record: "))
+    for i in range(num):
+        if emp[i].code == code:
+            delete_index(i)
+            print("Record deleted.")
+            return
+    print("Record not found.")
+
+# Function to search for a record by employee code
+def search_record():
+    code = int(input("Enter the Employee ID to Search Record: "))
+    for i in range(num):
+        if emp[i].code == code:
+            print("\n--- Employee Found ---")
+            print(f"Name: {emp[i].name}")
+            print(f"Employee ID: {emp[i].code}")
+            print(f"Designation: {emp[i].designation}")
+            print(f"Experience: {emp[i].exp}")
+            print(f"Age: {emp[i].age}")
+            print(f"Salary: {emp[i].salary}")
+            return
+    print("Record not found.")
+
+# Driver Code
+if __name__ == "__main__":
+    show_menu()
