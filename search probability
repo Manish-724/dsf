@@ -1,0 +1,118 @@
+import sys
+
+class OBST:
+    def __init__(self):
+        self.SIZE = 10
+        self.p = [0] * self.SIZE  # Probabilities with which we search for an element
+        self.q = [0] * self.SIZE  # Probabilities that an element is not found
+        self.a = [0] * self.SIZE  # Elements from which OBST is to be built
+        self.w = [[0] * self.SIZE for _ in range(self.SIZE)]  # Weight 'w[i][j]' of a tree having root
+        self.c = [[0] * self.SIZE for _ in range(self.SIZE)]  # Cost 'c[i][j]' of a tree having root 'r[i][j]'
+        self.r = [[0] * self.SIZE for _ in range(self.SIZE)]  # Represents root
+        self.n = 0  # Number of nodes
+
+    # This function accepts the input data
+    def get_data(self):
+        print("\nOptimal Binary Search Tree")
+        self.n = int(input("Enter the number of nodes: "))
+        
+        print("\nEnter the data:")
+        for i in range(1, self.n + 1):
+            self.a[i] = int(input(f"a[{i}] "))
+
+        # Input for search probabilities
+        for i in range(1, self.n + 1):
+            self.p[i] = float(input(f"p[{i}] "))
+
+        # Input for probabilities of not finding the elements
+        for i in range(self.n + 1):
+            self.q[i] = float(input(f"q[{i}]: "))
+
+    # This function returns a value in the range 'r[i][j-1]' to r[i+1][j]'
+    def Min_Value(self, i, j):
+        minimum = sys.maxsize
+        k = -1
+        for m in range(self.r[i][j - 1], self.r[i + 1][j] + 1):
+            if self.c[i][m - 1] + self.c[m][j] < minimum:
+                minimum = self.c[i][m - 1] + self.c[m][j]
+                k = m
+        return k
+
+    # This function builds the table from all the given probabilities
+    # It basically computes c, r, and w values
+    def build_OBST(self):
+        # Initialize w, c, and r tables
+        for i in range(self.n + 1):
+            self.w[i][i] = self.q[i]
+            self.r[i][i] = 0
+            self.c[i][i] = 0
+
+        # Optimal trees with one node
+        for i in range(self.n):
+            self.w[i][i + 1] = self.q[i] + self.q[i + 1] + self.p[i + 1]
+            self.r[i][i + 1] = i + 1
+            self.c[i][i + 1] = self.q[i] + self.q[i + 1] + self.p[i + 1]
+
+        self.w[self.n][self.n] = self.q[self.n]
+        self.r[self.n][self.n] = 0
+        self.c[self.n][self.n] = 0
+
+        # Find optimal trees with 'm' nodes
+        for m in range(2, self.n + 1):
+            for i in range(self.n - m + 1):
+                j = i + m
+                self.w[i][j] = self.w[i][j - 1] + self.p[j] + self.q[j]
+                k = self.Min_Value(i, j)
+                self.c[i][j] = self.w[i][j] + self.c[i][k - 1] + self.c[k][j]
+                self.r[i][j] = k
+
+    # This function builds the tree from the tables made by the OBST function
+    def build_tree(self):
+        queue = []
+        front = -1
+        rear = -1
+
+        print(f"\nThe Root of this OBST is: {self.r[0][self.n]}")
+        print(f"The Cost of this OBST is: {self.c[0][self.n]}")
+        print("\n\t NODE \t LEFT CHILD \t RIGHT CHILD")
+
+        # Initializing queue
+        queue.append((0, self.n))
+        rear += 1
+
+        while front != rear:
+            i, j = queue[front + 1]
+            front += 1
+            k = self.r[i][j]
+
+            print(f"\n\t {k}", end="")
+
+            # Checking for left child
+            if self.r[i][k - 1] != 0:
+                print(f"\t\t {self.r[i][k - 1]}", end="")
+                queue.append((i, k - 1))
+                rear += 1
+            else:
+                print("\t\t", end="")
+
+            # Checking for right child
+            if self.r[k][j] != 0:
+                print(f"\t {self.r[k][j]}", end="")
+                queue.append((k, j))
+                rear += 1
+            else:
+                print("\t", end="")
+
+        print("\n")
+
+
+# This is the main function
+def main():
+    obj = OBST()
+    obj.get_data()
+    obj.build_OBST()
+    obj.build_tree()
+
+
+if __name__ == "__main__":
+    main()
