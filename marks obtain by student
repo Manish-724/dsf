@@ -1,0 +1,45 @@
+class Heap:
+    def __init__(self):
+        self.n = 0
+        self.minheap = []
+        self.maxheap = []
+
+    def get(self):
+        self.n = int(input("Enter number of students: "))
+        print("Enter marks of students:")
+        for i in range(self.n):
+            k = int(input(f"Mark {i + 1}: "))
+            self.minheap.append(k)
+            self.upAdjust(True, i)   # Min heap adjustment
+            self.maxheap.append(k)
+            self.upAdjust(False, i)  # Max heap adjustment
+
+    def displayMin(self):
+        if self.minheap:
+            print(f"Minimum marks are: {self.minheap[0]}")
+        else:
+            print("Min heap is empty.")
+
+    def displayMax(self):
+        if self.maxheap:
+            print(f"Maximum marks are: {self.maxheap[0]}")
+        else:
+            print("Max heap is empty.")
+
+    def upAdjust(self, isMinHeap, i):
+        if isMinHeap:  # Min Heap
+            while i > 0 and self.minheap[(i - 1) // 2] > self.minheap[i]:
+                parent = (i - 1) // 2
+                self.minheap[i], self.minheap[parent] = self.minheap[parent], self.minheap[i]
+                i = parent
+        else:  # Max Heap
+            while i > 0 and self.maxheap[(i - 1) // 2] < self.maxheap[i]:
+                parent = (i - 1) // 2
+                self.maxheap[i], self.maxheap[parent] = self.maxheap[parent], self.maxheap[i]
+                i = parent
+
+if __name__ == "__main__":
+    H = Heap()
+    H.get()
+    H.displayMin()
+    H.displayMax()
